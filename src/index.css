@@ -1,0 +1,97 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 164 100% 37.5%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 226 31% 52%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+
+    --accent: 164 100% 37.5%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --radius: 0.75rem;
+
+    --sidebar-background: 0 0% 10%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 164 100% 37.5%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 0 0% 17%;
+    --sidebar-ring: 164 100% 37.5%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border selection:bg-eclipse-primary/10 selection:text-eclipse-primary;
+  }
+  
+  body {
+    @apply bg-eclipse-background text-eclipse-text font-poppins antialiased;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+}
+
+@layer utilities {
+  .glass-morph {
+    @apply backdrop-blur-lg bg-white/5 border border-white/10 rounded-lg;
+  }
+  
+  .neo-blur {
+    @apply backdrop-blur-md bg-black/40 border border-eclipse-border rounded-lg;
+  }
+  
+  .message-bubble {
+    @apply relative rounded-2xl p-3 max-w-[85%] break-words;
+  }
+  
+  .message-bubble-sent {
+    @apply message-bubble bg-eclipse-primary text-white ml-auto;
+  }
+  
+  .message-bubble-received {
+    @apply message-bubble bg-eclipse-card text-white mr-auto;
+  }
+  
+  .ghost-mode-active {
+    @apply border-2 border-eclipse-primary;
+  }
+  
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
