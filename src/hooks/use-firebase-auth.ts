@@ -51,7 +51,7 @@ export interface UserProfile {
     enabled: boolean;
     timer: number; // in seconds
   };
-  createdAt?: Date;
+  createdAt?: Date | any; // Support for both Date and Firestore FieldValue
   notificationSettings?: {
     newFollower: boolean;
     mentions: boolean;
@@ -95,31 +95,24 @@ export const useFirebaseAuth = () => {
               ...userData
             });
           } else {
-            // Create new user profile
-            setUserProfile({
+            // Create new user profile if it doesn't exist
+            const newProfile: UserProfile = {
               uid: user.uid,
-              displayName: user.displayName,
-              photoURL: user.photoURL,
-              email: user.email,
-              emailVerified: user.emailVerified,
-              ghostMode: {
-                enabled: false,
-                timer: 180 // 3 minutes default
-              }
-            });
-            
-            // Save to Firestore
-            await setDoc(doc(db, 'users', user.uid), {
-              displayName: user.displayName,
-              photoURL: user.photoURL,
+              displayName: user.displayName || null,
+              photoURL: user.photoURL || null,
               email: user.email,
               emailVerified: user.emailVerified,
               createdAt: serverTimestamp(),
               ghostMode: {
                 enabled: false,
-                timer: 180
+                timer: 180 // 3 minutes default
               }
-            });
+            };
+            
+            setUserProfile(newProfile);
+            
+            // Save to Firestore
+            await setDoc(doc(db, 'users', user.uid), newProfile);
           }
         } catch (error) {
           console.error("Error fetching user profile:", error);
@@ -134,11 +127,32 @@ export const useFirebaseAuth = () => {
     return () => unsubscribe();
   }, []);
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string, displayName?: string) => {
     setAuthError(null);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      return userCredential.user;
+      const user = userCredential.user;
+
+      // Set display name if provided
+      if (displayName) {
+        await updateProfile(user, { displayName });
+      }
+
+      // Create initial user profile in Firestore
+      await setDoc(doc(db, 'users', user.uid), {
+        uid: user.uid,
+        displayName: displayName || null,
+        photoURL: null,
+        email: user.email,
+        emailVerified: user.emailVerified,
+        createdAt: serverTimestamp(),
+        ghostMode: {
+          enabled: false,
+          timer: 180
+        }
+      });
+
+      return user;
     } catch (error: any) {
       setAuthError(error.message);
       return null;
